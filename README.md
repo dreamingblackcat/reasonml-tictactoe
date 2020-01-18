@@ -1,6 +1,6 @@
-# Basic Reason Template
+# ReasonML Tictactoe
 
-Hello! This project allows you to quickly get started with Reason and BuckleScript. If you wanted a more sophisticated version, try the `react` template (`bsb -theme react -init .`).
+This is an experimental project to play around with ReasonML and BuckleScript by trying to implement a CLI Tictactoe game.
 
 # Build
 ```
@@ -11,6 +11,11 @@ npm run build
 
 ```
 npm run start
+```
+
+# Run
+```
+npm run game
 ```
 
 

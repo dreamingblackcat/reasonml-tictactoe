@@ -15,9 +15,38 @@ function displayPlayer(player) {
   }
 }
 
+function updateBoard(board, move) {
+  var match = move[1];
+  var y = match[1];
+  var x = match[0];
+  var player = move[0];
+  return List.mapi((function (rowIndex, row) {
+                if (rowIndex === x) {
+                  return List.mapi((function (colIndex, value) {
+                                if (colIndex === y) {
+                                  if (player) {
+                                    return "X";
+                                  } else {
+                                    return "O";
+                                  }
+                                } else {
+                                  return value;
+                                }
+                              }), row);
+                } else {
+                  return row;
+                }
+              }), board);
+}
+
 function proceedGame(gameState, newMove) {
+  var newBoard = updateBoard(gameState.board, /* tuple */[
+        gameState.currentPlayer,
+        newMove
+      ]);
+  var match = gameState.currentPlayer === /* Black */1;
   return {
-          currentPlayer: gameState.currentPlayer,
+          currentPlayer: match ? /* White */0 : /* Black */1,
           history: List.append(gameState.history, /* :: */[
                 /* tuple */[
                   gameState.currentPlayer,
@@ -25,7 +54,7 @@ function proceedGame(gameState, newMove) {
                 ],
                 /* [] */0
               ]),
-          board: gameState.board,
+          board: newBoard,
           won: gameState.won
         };
 }
@@ -42,60 +71,55 @@ function renderGame(gameState) {
   return renderBoard(gameState.board);
 }
 
-var initialBoard = /* :: */[
-  /* :: */[
-    "_",
-    /* :: */[
-      "X",
-      /* :: */[
-        "_",
-        /* [] */0
-      ]
-    ]
-  ],
-  /* :: */[
-    /* :: */[
-      "_",
-      /* :: */[
-        "_",
-        /* :: */[
-          "_",
-          /* [] */0
-        ]
-      ]
-    ],
-    /* :: */[
-      /* :: */[
-        "_",
-        /* :: */[
-          "_",
-          /* :: */[
-            "_",
-            /* [] */0
-          ]
-        ]
-      ],
-      /* [] */0
-    ]
-  ]
-];
+function startGame(param) {
+  console.log("Starting Game");
+  console.log(renderBoard(/* :: */[
+            /* :: */[
+              "_",
+              /* :: */[
+                "_",
+                /* :: */[
+                  "_",
+                  /* [] */0
+                ]
+              ]
+            ],
+            /* :: */[
+              /* :: */[
+                "_",
+                /* :: */[
+                  "_",
+                  /* :: */[
+                    "_",
+                    /* [] */0
+                  ]
+                ]
+              ],
+              /* :: */[
+                /* :: */[
+                  "_",
+                  /* :: */[
+                    "_",
+                    /* :: */[
+                      "_",
+                      /* [] */0
+                    ]
+                  ]
+                ],
+                /* [] */0
+              ]
+            ]
+          ]));
+  return /* () */0;
+}
 
-var sample = {
-  currentPlayer: /* White */0,
-  history: /* [] */0,
-  board: initialBoard,
-  won: false
-};
-
-console.log("Starting Game");
-
-console.log(renderBoard(initialBoard));
+startGame(/* () */0);
 
 exports.OutOfBound = OutOfBound;
 exports.displayPlayer = displayPlayer;
+exports.updateBoard = updateBoard;
 exports.proceedGame = proceedGame;
 exports.renderBoard = renderBoard;
 exports.renderGame = renderGame;
-exports.initialBoard = initialBoard;
-exports.sample = sample;
+exports.startGame = startGame;
 /*  Not a pure module */

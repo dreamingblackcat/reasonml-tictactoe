@@ -23,9 +23,31 @@ let displayPlayer = (player: player) => {
   };
 }
 
+let updateBoard = (board, move) => {
+  let (player, (x, y)) = move;
+  board |> List.mapi((rowIndex, row) => {
+    if (rowIndex == x) {
+      row |> List.mapi((colIndex, value) => {
+        if (colIndex == y) {
+          displayPlayer(player)
+        } else {
+          value
+        }
+      })
+    } else {
+      row
+    }
+  })
+}
 
 let proceedGame = (gameState: game, newMove: position) => {
-  {...gameState, history: List.append(gameState.history, [ (gameState.currentPlayer, newMove) ]) }
+  let newBoard = updateBoard(gameState.board, (gameState.currentPlayer, newMove));
+  {
+    ...gameState,
+    history: List.append(gameState.history,[ (gameState.currentPlayer, newMove) ]),
+    board: newBoard,
+    currentPlayer: gameState.currentPlayer == Black ? White : Black
+  }
 }
 
 let renderBoard = (board: board) => {
@@ -39,19 +61,23 @@ let renderGame = (gameState: game) => {
   renderBoard(gameState.board)
 }
 
-let initialBoard: board = [
-  ["_", "X", "_"],
-  ["_", "_", "_"],
-  ["_", "_", "_"]
-]
 
-let sample: game = {
-  currentPlayer: White,
-  history: [],
-  board: initialBoard,
-  won: false
+let startGame = () => {
+  let initialBoard: board = [
+    ["_", "_", "_"],
+    ["_", "_", "_"],
+    ["_", "_", "_"]
+  ]
+
+  let sample: game = {
+    currentPlayer: White,
+    history: [],
+    board: initialBoard,
+    won: false
+  }
+
+  Js.Console.log("Starting Game")
+  Js.Console.log(renderGame(sample))
 }
 
-Js.Console.log("Starting Game")
-Js.Console.log(renderGame(sample))
-
+startGame()

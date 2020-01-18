@@ -23,6 +23,31 @@ let displayPlayer = (player: player) => {
   };
 }
 
+let getPos = (board: board, pos: position) => {
+  let (x, y) = pos;
+
+  List.nth(List.nth(board, x), y)
+}
+
+let isWin = (board: board, player: player) => {
+  let conditions: list(list(position)) = [
+    //Rows
+    [(0, 0), (0, 1), (0, 2)],
+    [(1, 0), (1, 1), (1, 2)],
+    [(2, 0), (2, 1), (2, 2)],
+    //Columns
+    [(0, 0), (1, 0), (2, 0)],
+    [(0, 1), (1, 1), (2, 1)],
+    [(0, 2), (1, 2), (2, 2)],
+    //Diagonals
+    [(0, 0), (1, 1), (2, 2)],
+    [(0, 2), (1, 1), (2, 0)]
+  ]
+  let checkCondition = (condition) => condition |> List.for_all(pos => getPos(board, pos) == displayPlayer(player))
+
+  conditions |> List.exists(checkCondition)
+}
+
 let updateBoard = (board, move) => {
   let (player, (x, y)) = move;
   board |> List.mapi((rowIndex, row) => {
@@ -43,10 +68,10 @@ let updateBoard = (board, move) => {
 let proceedGame = (gameState: game, newMove: position) => {
   let newBoard = updateBoard(gameState.board, (gameState.currentPlayer, newMove));
   {
-    ...gameState,
     history: List.append(gameState.history,[ (gameState.currentPlayer, newMove) ]),
     board: newBoard,
-    currentPlayer: gameState.currentPlayer == Black ? White : Black
+    currentPlayer: gameState.currentPlayer == Black ? White : Black,
+    won: isWin(newBoard, gameState.currentPlayer)
   }
 }
 
@@ -64,9 +89,9 @@ let renderGame = (gameState: game) => {
 
 let startGame = () => {
   let initialBoard: board = [
-    ["_", "_", "_"],
-    ["_", "_", "_"],
-    ["_", "_", "_"]
+    ["O", "_", "X"],
+    ["_", "O", "_"],
+    ["X", "_", "O"]
   ]
 
   let sample: game = {
@@ -78,6 +103,8 @@ let startGame = () => {
 
   Js.Console.log("Starting Game")
   Js.Console.log(renderGame(sample))
+  Js.Console.log(isWin(sample.board, Black))
+  Js.Console.log(isWin(sample.board, White))
 }
 
 startGame()

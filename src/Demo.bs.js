@@ -15,6 +15,189 @@ function displayPlayer(player) {
   }
 }
 
+function getPos(board, pos) {
+  return List.nth(List.nth(board, pos[0]), pos[1]);
+}
+
+function isWin(board, player) {
+  var checkCondition = function (condition) {
+    return List.for_all((function (pos) {
+                  return getPos(board, pos) === (
+                          player ? "X" : "O"
+                        );
+                }), condition);
+  };
+  return List.exists(checkCondition, /* :: */[
+              /* :: */[
+                /* tuple */[
+                  0,
+                  0
+                ],
+                /* :: */[
+                  /* tuple */[
+                    0,
+                    1
+                  ],
+                  /* :: */[
+                    /* tuple */[
+                      0,
+                      2
+                    ],
+                    /* [] */0
+                  ]
+                ]
+              ],
+              /* :: */[
+                /* :: */[
+                  /* tuple */[
+                    1,
+                    0
+                  ],
+                  /* :: */[
+                    /* tuple */[
+                      1,
+                      1
+                    ],
+                    /* :: */[
+                      /* tuple */[
+                        1,
+                        2
+                      ],
+                      /* [] */0
+                    ]
+                  ]
+                ],
+                /* :: */[
+                  /* :: */[
+                    /* tuple */[
+                      2,
+                      0
+                    ],
+                    /* :: */[
+                      /* tuple */[
+                        2,
+                        1
+                      ],
+                      /* :: */[
+                        /* tuple */[
+                          2,
+                          2
+                        ],
+                        /* [] */0
+                      ]
+                    ]
+                  ],
+                  /* :: */[
+                    /* :: */[
+                      /* tuple */[
+                        0,
+                        0
+                      ],
+                      /* :: */[
+                        /* tuple */[
+                          1,
+                          0
+                        ],
+                        /* :: */[
+                          /* tuple */[
+                            2,
+                            0
+                          ],
+                          /* [] */0
+                        ]
+                      ]
+                    ],
+                    /* :: */[
+                      /* :: */[
+                        /* tuple */[
+                          0,
+                          1
+                        ],
+                        /* :: */[
+                          /* tuple */[
+                            1,
+                            1
+                          ],
+                          /* :: */[
+                            /* tuple */[
+                              2,
+                              1
+                            ],
+                            /* [] */0
+                          ]
+                        ]
+                      ],
+                      /* :: */[
+                        /* :: */[
+                          /* tuple */[
+                            0,
+                            2
+                          ],
+                          /* :: */[
+                            /* tuple */[
+                              1,
+                              2
+                            ],
+                            /* :: */[
+                              /* tuple */[
+                                2,
+                                2
+                              ],
+                              /* [] */0
+                            ]
+                          ]
+                        ],
+                        /* :: */[
+                          /* :: */[
+                            /* tuple */[
+                              0,
+                              0
+                            ],
+                            /* :: */[
+                              /* tuple */[
+                                1,
+                                1
+                              ],
+                              /* :: */[
+                                /* tuple */[
+                                  2,
+                                  2
+                                ],
+                                /* [] */0
+                              ]
+                            ]
+                          ],
+                          /* :: */[
+                            /* :: */[
+                              /* tuple */[
+                                0,
+                                2
+                              ],
+                              /* :: */[
+                                /* tuple */[
+                                  1,
+                                  1
+                                ],
+                                /* :: */[
+                                  /* tuple */[
+                                    2,
+                                    0
+                                  ],
+                                  /* [] */0
+                                ]
+                              ]
+                            ],
+                            /* [] */0
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]);
+}
+
 function updateBoard(board, move) {
   var match = move[1];
   var y = match[1];
@@ -55,7 +238,7 @@ function proceedGame(gameState, newMove) {
                 /* [] */0
               ]),
           board: newBoard,
-          won: gameState.won
+          won: isWin(newBoard, gameState.currentPlayer)
         };
 }
 
@@ -72,44 +255,47 @@ function renderGame(gameState) {
 }
 
 function startGame(param) {
-  console.log("Starting Game");
-  console.log(renderBoard(/* :: */[
+  var initialBoard = /* :: */[
+    /* :: */[
+      "O",
+      /* :: */[
+        "_",
+        /* :: */[
+          "X",
+          /* [] */0
+        ]
+      ]
+    ],
+    /* :: */[
+      /* :: */[
+        "_",
+        /* :: */[
+          "O",
+          /* :: */[
+            "_",
+            /* [] */0
+          ]
+        ]
+      ],
+      /* :: */[
+        /* :: */[
+          "X",
+          /* :: */[
+            "_",
             /* :: */[
-              "_",
-              /* :: */[
-                "_",
-                /* :: */[
-                  "_",
-                  /* [] */0
-                ]
-              ]
-            ],
-            /* :: */[
-              /* :: */[
-                "_",
-                /* :: */[
-                  "_",
-                  /* :: */[
-                    "_",
-                    /* [] */0
-                  ]
-                ]
-              ],
-              /* :: */[
-                /* :: */[
-                  "_",
-                  /* :: */[
-                    "_",
-                    /* :: */[
-                      "_",
-                      /* [] */0
-                    ]
-                  ]
-                ],
-                /* [] */0
-              ]
+              "O",
+              /* [] */0
             ]
-          ]));
+          ]
+        ],
+        /* [] */0
+      ]
+    ]
+  ];
+  console.log("Starting Game");
+  console.log(renderBoard(initialBoard));
+  console.log(isWin(initialBoard, /* Black */1));
+  console.log(isWin(initialBoard, /* White */0));
   return /* () */0;
 }
 
@@ -117,6 +303,8 @@ startGame(/* () */0);
 
 exports.OutOfBound = OutOfBound;
 exports.displayPlayer = displayPlayer;
+exports.getPos = getPos;
+exports.isWin = isWin;
 exports.updateBoard = updateBoard;
 exports.proceedGame = proceedGame;
 exports.renderBoard = renderBoard;

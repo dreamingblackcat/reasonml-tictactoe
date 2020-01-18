@@ -255,13 +255,13 @@ function renderGame(gameState) {
 }
 
 function startGame(param) {
-  var initialBoard = /* :: */[
+  var initialGameState_board = /* :: */[
     /* :: */[
-      "O",
+      "_",
       /* :: */[
         "_",
         /* :: */[
-          "X",
+          "_",
           /* [] */0
         ]
       ]
@@ -270,7 +270,7 @@ function startGame(param) {
       /* :: */[
         "_",
         /* :: */[
-          "O",
+          "_",
           /* :: */[
             "_",
             /* [] */0
@@ -279,11 +279,11 @@ function startGame(param) {
       ],
       /* :: */[
         /* :: */[
-          "X",
+          "_",
           /* :: */[
             "_",
             /* :: */[
-              "O",
+              "_",
               /* [] */0
             ]
           ]
@@ -292,11 +292,91 @@ function startGame(param) {
       ]
     ]
   ];
+  var initialGameState = {
+    currentPlayer: /* White */0,
+    history: /* [] */0,
+    board: initialGameState_board,
+    won: false
+  };
+  var moves = /* :: */[
+    /* tuple */[
+      /* White */0,
+      /* tuple */[
+        1,
+        1
+      ]
+    ],
+    /* :: */[
+      /* tuple */[
+        /* Black */1,
+        /* tuple */[
+          0,
+          1
+        ]
+      ],
+      /* :: */[
+        /* tuple */[
+          /* White */0,
+          /* tuple */[
+            1,
+            2
+          ]
+        ],
+        /* :: */[
+          /* tuple */[
+            /* Black */1,
+            /* tuple */[
+              2,
+              2
+            ]
+          ],
+          /* :: */[
+            /* tuple */[
+              /* White */0,
+              /* tuple */[
+                1,
+                0
+              ]
+            ],
+            /* [] */0
+          ]
+        ]
+      ]
+    ]
+  ];
+  var index = 0;
+  var $$break = false;
+  var gameState = initialGameState;
   console.log("Starting Game");
-  console.log(renderBoard(initialBoard));
-  console.log(isWin(initialBoard, /* Black */1));
-  console.log(isWin(initialBoard, /* White */0));
-  return /* () */0;
+  while(List.length(gameState.history) > 9 || index < List.length(moves)) {
+    var match = List.nth(moves, index);
+    var match$1 = match[1];
+    var y = match$1[1];
+    var x = match$1[0];
+    gameState = proceedGame(gameState, /* tuple */[
+          x,
+          y
+        ]);
+    console.log("Player<" + ((
+            match[0] ? "X" : "O"
+          ) + ("> placed position<" + (String(x) + ("," + (String(y) + ">."))))));
+    console.log(renderBoard(gameState.board));
+    console.log("========================");
+    if (gameState.won) {
+      $$break = true;
+    }
+    index = index + 1 | 0;
+  };
+  if (gameState.won) {
+    var player = gameState.currentPlayer ? /* White */0 : /* Black */1;
+    console.log("Winner is: " + ((
+            player ? "X" : "O"
+          ) + "!"));
+    return /* () */0;
+  } else {
+    console.log("No one won!");
+    return /* () */0;
+  }
 }
 
 startGame(/* () */0);

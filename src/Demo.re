@@ -89,22 +89,55 @@ let renderGame = (gameState: game) => {
 
 let startGame = () => {
   let initialBoard: board = [
-    ["O", "_", "X"],
-    ["_", "O", "_"],
-    ["X", "_", "O"]
+    ["_", "_", "_"],
+    ["_", "_", "_"],
+    ["_", "_", "_"]
   ]
 
-  let sample: game = {
+  let initialGameState: game = {
     currentPlayer: White,
     history: [],
     board: initialBoard,
     won: false
   }
 
+  let moves = [
+    (White, (1,1)),
+    (Black, (0, 1)),
+    (White, (1,2)),
+    (Black, (2, 2)),
+    (White, (1,0))
+  ]
+
+  let index = ref(0);
+  let break = ref(false);
+  let gameState = ref(initialGameState);
   Js.Console.log("Starting Game")
-  Js.Console.log(renderGame(sample))
-  Js.Console.log(isWin(sample.board, Black))
-  Js.Console.log(isWin(sample.board, White))
+
+  while (List.length(gameState^.history) > 9 || index^ < List.length(moves)) {
+    let (player, (x, y)) = List.nth(moves, index^);
+    gameState := proceedGame(gameState^, (x, y));
+    Js.Console.log("Player<" ++ displayPlayer(player) ++ "> placed position<" ++ string_of_int(x) ++ "," ++ string_of_int(y) ++ ">.")
+    Js.Console.log(renderGame(gameState^));
+    Js.Console.log("========================");
+    if (gameState^.won) {
+      break := true;
+    }
+    index := index^ + 1;
+  }
+
+  let previousPlayer = (player) => {
+    switch(player) {
+      | Black => White
+      | White => Black
+    }
+  }
+
+  if (gameState^.won) {
+    Js.Console.log("Winner is: " ++ displayPlayer(previousPlayer(gameState^.currentPlayer)) ++ "!");
+  } else {
+    Js.Console.log("No one won!")
+  }
 }
 
 startGame()

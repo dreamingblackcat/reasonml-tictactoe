@@ -2,7 +2,7 @@ type placement = White | Black | Empty;
 
 exception OutOfBound(string);
 
-type renderedBoard = list(list(placement));
+type board = list(list(string));
 
 type position = (int, int);
 type player = White | Black;
@@ -12,6 +12,7 @@ type play = (player, position)
 type game = {
   currentPlayer: player,
   history: list(play),
+  board: board,
   won: bool
 };
 
@@ -27,50 +28,30 @@ let proceedGame = (gameState: game, newMove: position) => {
   {...gameState, history: List.append(gameState.history, [ (gameState.currentPlayer, newMove) ]) }
 }
 
-let renderBoard = (moves: list(play), initialBoard: renderedBoard) => {
-  List.mapi((row, cols) => {
-    List.mapi((col, item) => {
-      switch(List.find(play => {
-        let (player, (x, y)) = play;
-        x == row && y == col;
-      })(moves)) {
-        | (player, (x, y)) => {
-          if (y == 2) {
-            displayPlayer(player) ++ "\n"
-          } else {
-            displayPlayer(player)
-          }
-        }
-        | exception Not_found => {
-          if (col == 2) {
-            "E" ++ "\n"
-          } else {
-            "E"
-          }
-        }
-      }
-    })(cols)
-  })(initialBoard)
+let renderBoard = (board: board) => {
+  let combineColumns = String.concat("")
+  let combineRows = String.concat("\n")
+
+  board |>  List.map(combineColumns) |> combineRows
 }
 
 let renderGame = (gameState: game) => {
-  let initialBoard: renderedBoard = [
-    [Empty, Empty, Empty],
-    [Empty, Empty, Empty],
-    [Empty, Empty, Empty]
-  ]
-
-  renderBoard(gameState.history, initialBoard) |> List.flatten |> String.concat("")
+  renderBoard(gameState.board)
 }
 
+let initialBoard: board = [
+  ["_", "X", "_"],
+  ["_", "_", "_"],
+  ["_", "_", "_"]
+]
+
 let sample: game = {
-  currentPlayer: Black,
-  history: [(Black, (1, 0)), (White, (0, 1))],
+  currentPlayer: White,
+  history: [],
+  board: initialBoard,
   won: false
 }
 
 Js.Console.log("Starting Game")
 Js.Console.log(renderGame(sample))
-
-
 
